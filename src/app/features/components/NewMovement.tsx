@@ -7,9 +7,9 @@ import {
   Button,
   useDisclosure,
   Form,
-//   Textarea,
+  //   Textarea,
   NumberInput,
-//   DatePicker,
+  //   DatePicker,
 } from "@heroui/react";
 import {
   Plus,
@@ -26,7 +26,7 @@ import { useEffect, useRef, useState } from "react";
 
 export const NewMovement = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-//   const today = new Date();
+  //   const today = new Date();
   const [selectedCategory, setSelectedCategory] = useState("food");
   const amountInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -53,11 +53,11 @@ export const NewMovement = () => {
     const dataFormatted = {
       amount: parseFloat(formData.amount as string),
       category: formData.category as string,
-      date: formData.date as string,
-      notes: formData.notes as string,
+      date: new Date().toISOString().split("T")[0], // Default to today
+      notes: "", // Placeholder for notes
     };
 
-    console.log("Datos formateados:", dataFormatted);
+    console.log("New movement data:", dataFormatted);
   };
 
   return (
@@ -72,53 +72,50 @@ export const NewMovement = () => {
       >
         <Plus className="size-8" />
       </Button>
-      <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+        backdrop="blur"
+        disableAnimation
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+      >
         <Form onSubmit={handleSubmit}>
           <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  Nuevo movimiento
-                </ModalHeader>
-                <ModalBody>
-                  <NumberInput
-                    ref={amountInputRef}
-                    name="amount"
-                    aria-label="Monto"
-                    placeholder="Monto"
-                    minValue={1}
+            <ModalHeader className="flex flex-col gap-1">
+              Nuevo movimiento
+            </ModalHeader>
+            <ModalBody>
+              <NumberInput
+                ref={amountInputRef}
+                name="amount"
+                aria-label="Monto"
+                placeholder="Monto"
+                minValue={1}
+                size="lg"
+                isRequired
+              />
+              <input type="hidden" name="category" value={selectedCategory} />
+              <div className="flex gap-3 overflow-x-auto pb-2">
+                {categories.map(({ value, label, icon: Icon }) => (
+                  <Button
+                    key={value}
                     size="lg"
-                    isRequired
-                  />
-                  <input
-                    type="hidden"
-                    name="category"
-                    value={selectedCategory}
-                  />
-                  <div className="flex gap-3 overflow-x-auto pb-2">
-                    {categories.map(({ value, label, icon: Icon }) => (
-                      <Button
-                        key={value}
-                        size="lg"
-                        variant={selectedCategory === value ? "solid" : "flat"}
-                        color={
-                          selectedCategory === value ? "primary" : "default"
-                        }
-                        className="min-w-fit justify-start gap-3"
-                        onPress={() => setSelectedCategory(value)}
-                        aria-pressed={selectedCategory === value}
-                        aria-label={`Categoría ${label}`}
-                        startContent={<Icon className="size-5" />}
-                      >
-                        <span className="truncate">{label}</span>
-                      </Button>
-                    ))}
-                  </div>
-                  <p className="text-sm text-center text-default">
-                    La fecha y las notas se pueden agregar después de crear el
-                    movimiento.
-                  </p>
-                  {/* <DatePicker
+                    variant={selectedCategory === value ? "flat" : "flat"}
+                    color={selectedCategory === value ? "primary" : "default"}
+                    className="min-w-fit justify-start gap-3"
+                    onPress={() => setSelectedCategory(value)}
+                    aria-pressed={selectedCategory === value}
+                    aria-label={`Categoría ${label}`}
+                    startContent={<Icon className="size-5" />}
+                  >
+                    <span className="truncate">{label}</span>
+                  </Button>
+                ))}
+              </div>
+              <p className="text-sm text-center text-default">
+                La fecha y las notas se pueden agregar después de crear el
+                movimiento.
+              </p>
+              {/* <DatePicker
                     name="date"
                     aria-label="Fecha"
                     size="lg"
@@ -130,22 +127,17 @@ export const NewMovement = () => {
                     size="lg"
                     placeholder="Notas"
                   /> */}
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    color="danger"
-                    size="lg"
-                    variant="light"
-                    onPress={onClose}
-                  >
-                    Cerrar
-                  </Button>
-                  <Button color="primary" size="lg" type="submit">
-                    Crear
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="primary"
+                size="lg"
+                type="submit"
+                className="w-full"
+              >
+                Crear
+              </Button>
+            </ModalFooter>
           </ModalContent>
         </Form>
       </Modal>

@@ -73,11 +73,9 @@ export const Home = () => {
   ];
 
   return (
-    <main className="relative flex flex-col gap-4 p-4 h-full">
-      <article className="flex flex-col gap-4">
-        <h1 className="font-medium text-center">Personal Expenses</h1>
-
-        <h2 className="text-center text-default-500">Total balance</h2>
+    <main className="relative flex flex-col gap-2 p-4 h-full">
+      <article className="flex flex-col gap-2">
+        <h1 className="text-center text-default-500">Total balance</h1>
 
         <p className="text-center first-letter:g font-semibold text-5xl">
           $12,345.67
@@ -93,7 +91,7 @@ export const Home = () => {
               Ver todas
             </Button>
           </div>
-          <div className="flex gap-4 w-full overflow-x-auto pb-1">
+          <div className="flex gap-2 w-full overflow-x-auto pb-1">
             {expensesByCategory.map(({ category, amount, icon }) => (
               <Card key={category} className="min-w-1/2">
                 <CardBody>
@@ -110,7 +108,7 @@ export const Home = () => {
           </div>
         </article>
       </article>
-      <article className="flex flex-col gap-4 flex-1 min-h-0">
+      <article className="flex flex-col gap-2 flex-1 min-h-0">
         <div className="flex items-center justify-between">
           <h2 className="font-medium">Últimos movimientos</h2>
           <Button
