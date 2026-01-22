@@ -1,9 +1,9 @@
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerBody,
-  DrawerFooter,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
   Button,
   useDisclosure,
   Form,
@@ -39,45 +39,48 @@ export const NewMovement = () => {
       >
         <Plus className="size-8" />
       </Button>
-      <Drawer
-        placement="bottom"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <Form onSubmit={handleSubmit}>
-          <DrawerContent>
+          <ModalContent>
             {(onClose) => (
               <>
-                <DrawerHeader className="flex flex-col gap-1">
+                <ModalHeader className="flex flex-col gap-1">
                   Nuevo movimiento
-                </DrawerHeader>
-                <DrawerBody>
+                </ModalHeader>
+                <ModalBody>
                   <NumberInput
                     name="amount"
                     aria-label="Monto"
                     placeholder="Monto"
                     minValue={1}
+                    size="lg"
                     isRequired
                   />
                   <Textarea
                     name="reason"
                     aria-label="Razón"
+                    size="lg"
                     placeholder="Razón (opcional)"
                   />
-                </DrawerBody>
-                <DrawerFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="danger"
+                    size="lg"
+                    variant="light"
+                    onPress={onClose}
+                  >
                     Cerrar
                   </Button>
-                  <Button color="primary" type="submit">
+                  <Button color="primary" size="lg" type="submit">
                     Crear
                   </Button>
-                </DrawerFooter>
+                </ModalFooter>
               </>
             )}
-          </DrawerContent>
+          </ModalContent>
         </Form>
-      </Drawer>
+      </Modal>
     </>
   );
 };
