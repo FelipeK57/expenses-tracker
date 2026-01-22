@@ -9,11 +9,42 @@ import {
   Form,
   Textarea,
   NumberInput,
+  DatePicker,
 } from "@heroui/react";
-import { Plus } from "lucide-react";
+import {
+  Plus,
+  Utensils,
+  Bus,
+  Clapperboard,
+  ShoppingBag,
+  HeartPulse,
+  Receipt,
+  MoreHorizontal,
+} from "lucide-react";
+import { parseDate } from "@internationalized/date";
+import { useEffect, useRef, useState } from "react";
 
 export const NewMovement = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const today = new Date();
+  const [selectedCategory, setSelectedCategory] = useState("food");
+  const amountInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      amountInputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  const categories = [
+    { value: "food", label: "Comida", icon: Utensils },
+    { value: "transport", label: "Transporte", icon: Bus },
+    { value: "entertainment", label: "Entretenimiento", icon: Clapperboard },
+    { value: "shopping", label: "Compras", icon: ShoppingBag },
+    { value: "health", label: "Salud", icon: HeartPulse },
+    { value: "bills", label: "Facturas", icon: Receipt },
+    { value: "others", label: "Otros", icon: MoreHorizontal },
+  ];
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -21,7 +52,9 @@ export const NewMovement = () => {
 
     const dataFormatted = {
       amount: parseFloat(formData.amount as string),
-      reason: formData.reason as string,
+      category: formData.category as string,
+      date: formData.date as string,
+      notes: formData.notes as string,
     };
 
     console.log("Datos formateados:", dataFormatted);
@@ -39,7 +72,7 @@ export const NewMovement = () => {
       >
         <Plus className="size-8" />
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange}>
         <Form onSubmit={handleSubmit}>
           <ModalContent>
             {(onClose) => (
@@ -49,6 +82,7 @@ export const NewMovement = () => {
                 </ModalHeader>
                 <ModalBody>
                   <NumberInput
+                    ref={amountInputRef}
                     name="amount"
                     aria-label="Monto"
                     placeholder="Monto"
@@ -56,11 +90,41 @@ export const NewMovement = () => {
                     size="lg"
                     isRequired
                   />
-                  <Textarea
-                    name="reason"
-                    aria-label="Razón"
+                  <input
+                    type="hidden"
+                    name="category"
+                    value={selectedCategory}
+                  />
+                  <div className="flex gap-3 overflow-x-auto pb-2">
+                    {categories.map(({ value, label, icon: Icon }) => (
+                      <Button
+                        key={value}
+                        size="lg"
+                        variant={selectedCategory === value ? "solid" : "flat"}
+                        color={
+                          selectedCategory === value ? "primary" : "default"
+                        }
+                        className="min-w-fit justify-start gap-3"
+                        onPress={() => setSelectedCategory(value)}
+                        aria-pressed={selectedCategory === value}
+                        aria-label={`Categoría ${label}`}
+                        startContent={<Icon className="size-5" />}
+                      >
+                        <span className="truncate">{label}</span>
+                      </Button>
+                    ))}
+                  </div>
+                  <DatePicker
+                    name="date"
+                    aria-label="Fecha"
                     size="lg"
-                    placeholder="Razón (opcional)"
+                    defaultValue={parseDate(today.toISOString().split("T")[0])}
+                  />
+                  <Textarea
+                    name="notes"
+                    aria-label="Notas"
+                    size="lg"
+                    placeholder="Notas"
                   />
                 </ModalBody>
                 <ModalFooter>
