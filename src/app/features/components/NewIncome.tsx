@@ -51,7 +51,7 @@ export const NewIncome = () => {
         isIconOnly
         size="lg"
         color="success"
-        className="size-16 rounded-full"
+        className="size-16"
       >
         <Plus className="size-8" />
       </Button>

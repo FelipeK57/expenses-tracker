@@ -51,7 +51,7 @@ export const NewExpense = () => {
         isIconOnly
         size="lg"
         color="danger"
-        className="size-16 rounded-full"
+        className="size-16"
       >
         <Minus className="size-8" />
       </Button>

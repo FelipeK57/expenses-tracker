@@ -69,18 +69,18 @@ export const Home = () => {
     <main className="relative flex flex-col gap-2 p-4 h-full">
       <article className="flex flex-col gap-2">
         <article className="flex items-center justify-between">
-          <p>
+          <p className="text-lg font-semibold">
             Resumen de{" "}
             {new Date(year, month).toLocaleString("es-ES", {
               month: "long",
               year: "numeric",
             })}
           </p>
-          <article className="flex items-center justify-center gap-2 mt-2">
-            <Button isIconOnly variant="light" size="sm">
+          <article className="flex items-center justify-center gap-2">
+            <Button isIconOnly variant="light" size="lg">
               <ChevronLeft className="size-5" />
             </Button>
-            <Button isIconOnly variant="light" size="sm" className="ml-2">
+            <Button isIconOnly variant="light" size="lg">
               <ChevronRight className="size-5" />
             </Button>
           </article>
@@ -133,7 +133,7 @@ export const Home = () => {
                     transaction.type === "income"
                       ? "bg-success-400/20 text-success"
                       : "bg-danger-400/20 text-danger"
-                  } rounded-xl mb-2`}
+                  } rounded-xl`}
                 >
                   {(() => {
                     const Icon: any = findIconByCategory(
