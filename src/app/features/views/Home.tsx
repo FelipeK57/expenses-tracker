@@ -1,12 +1,6 @@
 import { Button, Card, CardBody } from "@heroui/react";
-import {
-  Bus,
-  ChevronRight,
-  Plus,
-  Popcorn,
-  SlidersHorizontal,
-  Utensils,
-} from "lucide-react";
+import { Bus, ChevronRight, Popcorn, Utensils } from "lucide-react";
+import { NewMovement } from "../components/NewMovement";
 
 export const Home = () => {
   const expensesByCategory = [
@@ -96,7 +90,7 @@ export const Home = () => {
               endContent={<ChevronRight className="size-5" />}
               variant="light"
             >
-              Ver todo
+              Ver todas
             </Button>
           </div>
           <div className="flex gap-4 w-full overflow-x-auto pb-1">
@@ -121,9 +115,9 @@ export const Home = () => {
           <h2 className="font-medium">Últimos movimientos</h2>
           <Button
             variant="light"
-            endContent={<SlidersHorizontal className="size-5" />}
+            endContent={<ChevronRight className="size-5" />}
           >
-            Filtrar
+            Ver todos
           </Button>
         </div>
         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
@@ -144,9 +138,7 @@ export const Home = () => {
           )}
         </div>
       </article>
-      <Button isIconOnly size="lg" className="absolute bottom-2 right-2">
-          <Plus />
-      </Button>
+      <NewMovement />
     </main>
   );
 };
