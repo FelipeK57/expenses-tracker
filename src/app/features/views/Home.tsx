@@ -69,7 +69,7 @@ export const Home = () => {
     <main className="relative flex flex-col gap-2 p-4 h-full">
       <article className="flex flex-col gap-2">
         <article className="flex items-center justify-between">
-          <p className="text-lg font-semibold">
+          <p className="text font-semibold">
             Resumen de{" "}
             {new Date(year, month).toLocaleString("es-ES", {
               month: "long",
