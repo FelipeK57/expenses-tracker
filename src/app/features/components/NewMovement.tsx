@@ -7,9 +7,9 @@ import {
   Button,
   useDisclosure,
   Form,
-  Textarea,
+//   Textarea,
   NumberInput,
-  DatePicker,
+//   DatePicker,
 } from "@heroui/react";
 import {
   Plus,
@@ -21,12 +21,12 @@ import {
   Receipt,
   MoreHorizontal,
 } from "lucide-react";
-import { parseDate } from "@internationalized/date";
+// import { parseDate } from "@internationalized/date";
 import { useEffect, useRef, useState } from "react";
 
 export const NewMovement = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const today = new Date();
+//   const today = new Date();
   const [selectedCategory, setSelectedCategory] = useState("food");
   const amountInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -114,7 +114,11 @@ export const NewMovement = () => {
                       </Button>
                     ))}
                   </div>
-                  <DatePicker
+                  <p className="text-sm text-center text-default">
+                    La fecha y las notas se pueden agregar después de crear el
+                    movimiento.
+                  </p>
+                  {/* <DatePicker
                     name="date"
                     aria-label="Fecha"
                     size="lg"
@@ -125,7 +129,7 @@ export const NewMovement = () => {
                     aria-label="Notas"
                     size="lg"
                     placeholder="Notas"
-                  />
+                  /> */}
                 </ModalBody>
                 <ModalFooter>
                   <Button
