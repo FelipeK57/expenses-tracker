@@ -1,6 +1,7 @@
 import { Button, Card, CardBody } from "@heroui/react";
 import { Bus, ChevronRight, Popcorn, Utensils } from "lucide-react";
-import { NewMovement } from "../components/NewMovement";
+import { NewIncome } from "../components/NewIncome";
+import { NewExpense } from "../components/NewExpense";
 
 export const Home = () => {
   const expensesByCategory = [
@@ -64,12 +65,6 @@ export const Home = () => {
       date: "2024-06-05",
       category: "Transporte",
     },
-    {
-      reason: "Concierto",
-      amount: 45.0,
-      date: "2024-06-06",
-      category: "Entretenimiento",
-    },
   ];
 
   return (
@@ -77,7 +72,7 @@ export const Home = () => {
       <article className="flex flex-col gap-2">
         <h1 className="text-center text-default-500">Total balance</h1>
 
-        <p className="text-center first-letter:g font-semibold text-5xl">
+        <p className="text-center first-letter:g font-bold text-6xl py-2">
           $12,345.67
         </p>
 
@@ -136,7 +131,10 @@ export const Home = () => {
           )}
         </div>
       </article>
-      <NewMovement />
+      <div className="absolute bottom-4 right-4 flex flex-col gap-4">
+        <NewIncome />
+        <NewExpense />
+      </div>
     </main>
   );
 };

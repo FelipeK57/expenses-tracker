@@ -1,3 +1,4 @@
+import { expenseCategories } from "@/app/schema";
 import {
   Modal,
   ModalContent,
@@ -11,20 +12,11 @@ import {
   NumberInput,
   //   DatePicker,
 } from "@heroui/react";
-import {
-  Plus,
-  Utensils,
-  Bus,
-  Clapperboard,
-  ShoppingBag,
-  HeartPulse,
-  Receipt,
-  MoreHorizontal,
-} from "lucide-react";
+import { Minus } from "lucide-react";
 // import { parseDate } from "@internationalized/date";
 import { useEffect, useRef, useState } from "react";
 
-export const NewMovement = () => {
+export const NewExpense = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   //   const today = new Date();
   const [selectedCategory, setSelectedCategory] = useState("food");
@@ -36,15 +28,7 @@ export const NewMovement = () => {
     }
   }, [isOpen]);
 
-  const categories = [
-    { value: "food", label: "Comida", icon: Utensils },
-    { value: "transport", label: "Transporte", icon: Bus },
-    { value: "entertainment", label: "Entretenimiento", icon: Clapperboard },
-    { value: "shopping", label: "Compras", icon: ShoppingBag },
-    { value: "health", label: "Salud", icon: HeartPulse },
-    { value: "bills", label: "Facturas", icon: Receipt },
-    { value: "others", label: "Otros", icon: MoreHorizontal },
-  ];
+  const categories = expenseCategories;
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -66,11 +50,10 @@ export const NewMovement = () => {
         onPress={onOpen}
         isIconOnly
         size="lg"
-        color="primary"
-        variant="shadow"
-        className="absolute bottom-4 right-4 size-16 rounded-full"
+        color="danger"
+        className="size-16 rounded-full"
       >
-        <Plus className="size-8" />
+        <Minus className="size-8" />
       </Button>
       <Modal
         backdrop="blur"
@@ -81,7 +64,7 @@ export const NewMovement = () => {
         <Form onSubmit={handleSubmit}>
           <ModalContent>
             <ModalHeader className="flex flex-col gap-1">
-              Nuevo movimiento
+              Nuevo gasto
             </ModalHeader>
             <ModalBody>
               <NumberInput
@@ -95,15 +78,15 @@ export const NewMovement = () => {
               />
               <input type="hidden" name="category" value={selectedCategory} />
               <div className="flex gap-3 overflow-x-auto pb-2">
-                {categories.map(({ value, label, icon: Icon }) => (
+                {categories.map(({ key, label, icon: Icon }) => (
                   <Button
-                    key={value}
+                    key={key}
                     size="lg"
-                    variant={selectedCategory === value ? "flat" : "flat"}
-                    color={selectedCategory === value ? "primary" : "default"}
+                    variant={selectedCategory === key ? "flat" : "flat"}
+                    color={selectedCategory === key ? "danger" : "default"}
                     className="min-w-fit justify-start gap-3"
-                    onPress={() => setSelectedCategory(value)}
-                    aria-pressed={selectedCategory === value}
+                    onPress={() => setSelectedCategory(key)}
+                    aria-pressed={selectedCategory === key}
                     aria-label={`Categoría ${label}`}
                     startContent={<Icon className="size-5" />}
                   >
@@ -129,12 +112,7 @@ export const NewMovement = () => {
                   /> */}
             </ModalBody>
             <ModalFooter>
-              <Button
-                color="primary"
-                size="lg"
-                type="submit"
-                className="w-full"
-              >
+              <Button color="danger" size="lg" type="submit" className="w-full">
                 Crear
               </Button>
             </ModalFooter>
