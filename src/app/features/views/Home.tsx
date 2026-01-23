@@ -4,6 +4,7 @@ import {
   ChevronRight,
   TrendingDown,
   TrendingUp,
+  History
 } from "lucide-react";
 import { NewIncome } from "../components/NewIncome";
 import { NewExpense } from "../components/NewExpense";
@@ -42,6 +43,7 @@ export const Home = () => {
   const [currentBalance, setCurrentBalance] = useState<number>(0);
   const [totalIncomes, setTotalIncomes] = useState<number>(0);
   const [totalExpenses, setTotalExpenses] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   // Refrescar datos
   const [refreshData, setRefreshData] = useState<boolean>(false);
@@ -49,25 +51,37 @@ export const Home = () => {
   // Cargar datos al montar el componente
   useEffect(() => {
     const fetchData = async () => {
-      const recentTransactionsData = await getRecentTransactions(5);
-      setRecentTransactions(recentTransactionsData);
+      setLoading(true);
+      try {
+        const [
+          recentTransactionsData,
+          currentBalanceData,
+          incomesData,
+          expensesData,
+        ] = await Promise.all([
+          getRecentTransactions(5),
+          getCurrentBalance(),
+          getTotalIncomesByMonth(month, year),
+          getTotalExpensesByMonth(month, year),
+        ]);
 
-      const currentBalanceData = await getCurrentBalance();
-      setCurrentBalance(currentBalanceData);
+        setRecentTransactions(recentTransactionsData);
+        setCurrentBalance(currentBalanceData);
 
-      const incomesData = await getTotalIncomesByMonth(month, year);
-      const totalIncomesAmount = incomesData.reduce(
-        (acc, transaction) => acc + transaction.amount,
-        0,
-      );
-      setTotalIncomes(totalIncomesAmount);
+        const totalIncomesAmount = incomesData.reduce(
+          (acc, transaction) => acc + transaction.amount,
+          0,
+        );
+        setTotalIncomes(totalIncomesAmount);
 
-      const expensesData = await getTotalExpensesByMonth(month, year);
-      const totalExpensesAmount = expensesData.reduce(
-        (acc, transaction) => acc + transaction.amount,
-        0,
-      );
-      setTotalExpenses(totalExpensesAmount);
+        const totalExpensesAmount = expensesData.reduce(
+          (acc, transaction) => acc + transaction.amount,
+          0,
+        );
+        setTotalExpenses(totalExpensesAmount);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -76,7 +90,7 @@ export const Home = () => {
   return (
     <main className="relative flex flex-col gap-2 p-4 h-full">
       <article className="flex flex-col gap-2">
-        <article className="flex items-center justify-between">
+        <article className="flex items-center gap-1 justify-between">
           <p className="text font-semibold">
             Resumen de{" "}
             {new Date(year, month).toLocaleString("es-ES", {
@@ -96,15 +110,15 @@ export const Home = () => {
 
         <div className="py-4">
           <p className="text-sm text-center">Balance actual</p>
-          <p className="text-center first-letter:g font-bold text-5xl">
-            {currentBalance ? (
+          <div className="text-center first-letter:g font-bold text-5xl">
+            {!loading ? (
               `$${currentBalance.toLocaleString("es-ES", {
                 minimumFractionDigits: 2,
               })}`
             ) : (
               <Skeleton className="w-32 h-10 mx-auto rounded-xl" />
             )}
-          </p>
+          </div>
         </div>
 
         <article className="grid grid-cols-2 gap-2">
@@ -114,15 +128,15 @@ export const Home = () => {
                 <TrendingUp className="size-5 text-success" />
               </div>
               <p className="mt-2 font-semibold text-default-500">Ingresos</p>
-              <p className="font-semibold text-xl mt-2">
-                {totalIncomes ? (
+              <div className="font-semibold text-xl mt-2">
+                {!loading ? (
                   `$${totalIncomes.toLocaleString("es-ES", {
                     minimumFractionDigits: 2,
                   })}`
                 ) : (
                   <Skeleton className="w-24 h-6 rounded-xl" />
                 )}
-              </p>
+              </div>
             </CardBody>
           </Card>
           <Card className="w-full shadow-none border-1 border-divider dark:border-content2">
@@ -131,15 +145,15 @@ export const Home = () => {
                 <TrendingDown className="size-5 text-danger" />
               </div>
               <p className="mt-2 font-semibold text-default-500">Gastos</p>
-              <p className="font-semibold text-xl mt-2">
-                {totalExpenses ? (
+              <div className="font-semibold text-xl mt-2">
+                {!loading ? (
                   `$${totalExpenses.toLocaleString("es-ES", {
                     minimumFractionDigits: 2,
                   })}`
                 ) : (
                   <Skeleton className="w-24 h-6 rounded-xl" />
                 )}
-              </p>
+              </div>
             </CardBody>
           </Card>
         </article>
@@ -155,7 +169,7 @@ export const Home = () => {
           </Button>
         </div>
         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
-          {recentTransactions.length > 0 ? (
+          {!loading && recentTransactions.length > 0 ? (
             recentTransactions.map((transaction, index) => (
               <Card
                 key={index}
@@ -191,6 +205,13 @@ export const Home = () => {
                 </CardBody>
               </Card>
             ))
+          ) : recentTransactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-2 mt-4">
+              <History className="size-12 text-default" />
+              <p className="text-center text-sm text-default-500">
+                No hay movimientos recientes.
+              </p>
+            </div>
           ) : (
             <>
               {[...Array(3)].map((_, index) => (
@@ -201,8 +222,8 @@ export const Home = () => {
                   <CardBody className="flex flex-row gap-4 items-center">
                     <Skeleton className="size-12 rounded-xl shrink-0" />
                     <div className="flex flex-col gap-2 flex-1">
-                      <Skeleton className="w-24 h-6 rounded-lg" />
                       <Skeleton className="w-32 h-4 rounded-lg" />
+                      <Skeleton className="w-24 h-6 rounded-lg" />
                     </div>
                   </CardBody>
                 </Card>
