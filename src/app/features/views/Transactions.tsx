@@ -27,6 +27,7 @@ import {
   type Transaction,
 } from "@/app/schema";
 import { getTransactionsByMonth } from "../services/transactions.service";
+import { TransactionCard } from "../components/TransactionCard";
 
 const PAGE_SIZE = 5;
 
@@ -45,7 +46,7 @@ export const Transactions = () => {
   >("all");
   const [tempCategoryFilter, setTempCategoryFilter] = useState<string>("all");
   const [page, setPage] = useState<number>(1);
-  //   const [refreshData, setRefreshData] = useState<boolean>(false);
+  const [refreshData, setRefreshData] = useState<boolean>(false);
   const {
     isOpen: isFiltersOpen,
     onOpen: onOpenFiltersBase,
@@ -70,7 +71,7 @@ export const Transactions = () => {
     };
 
     fetchTransactions();
-  }, [month, year]);
+  }, [month, year, refreshData]);
 
   useEffect(() => {
     setPage(1);
@@ -292,39 +293,13 @@ export const Transactions = () => {
         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
           {!loading && paginatedTransactions.length > 0 ? (
             paginatedTransactions.map((transaction) => (
-              <Card
+              <TransactionCard
                 key={`${transaction.id}-${transaction.date}-${transaction.amount}`}
-                className="shadow-none border-1 border-divider dark:border-content2"
-              >
-                <CardBody className="flex flex-row gap-4 items-center">
-                  <div
-                    className={`grid place-content-center size-12 ${
-                      transaction.type === "income"
-                        ? "bg-success-400/20 text-success"
-                        : "bg-danger-400/20 text-danger"
-                    } rounded-xl`}
-                  >
-                    {(() => {
-                      const Icon: any = findIconByCategory(
-                        transaction.type,
-                        transaction.category,
-                      ) as typeof Icon;
-                      return Icon ? <Icon className="size-6" /> : null;
-                    })()}
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="font-semibold">
-                      {transaction.type === "income" ? "+" : "-"}$
-                      {transaction.amount.toLocaleString("es-ES", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </p>
-                    <p className="text-sm text-default-500">
-                      {new Date(transaction.date).toLocaleDateString("es-ES")}
-                    </p>
-                  </div>
-                </CardBody>
-              </Card>
+                transaction={transaction}
+                findIconByCategory={findIconByCategory}
+                onDelete={() => setRefreshData(!refreshData)}
+                onUpdate={() => setRefreshData(!refreshData)}
+              />
             ))
           ) : !loading && paginatedTransactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 mt-4">

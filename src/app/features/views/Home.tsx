@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { NewIncome } from "../components/NewIncome";
 import { NewExpense } from "../components/NewExpense";
+import { TransactionCard } from "../components/TransactionCard";
 import {
   type Transaction,
   expenseCategories,
@@ -175,39 +176,13 @@ export const Home = () => {
         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
           {!loading && recentTransactions.length > 0 ? (
             recentTransactions.map((transaction, index) => (
-              <Card
+              <TransactionCard
                 key={index}
-                className="shadow-none border-1 border-divider dark:border-content2"
-              >
-                <CardBody className="flex flex-row gap-4 items-center">
-                  <div
-                    className={`grid place-content-center size-12 ${
-                      transaction.type === "income"
-                        ? "bg-success-400/20 text-success"
-                        : "bg-danger-400/20 text-danger"
-                    } rounded-xl`}
-                  >
-                    {(() => {
-                      const Icon: any = findIconByCategory(
-                        transaction.type,
-                        transaction.category,
-                      ) as typeof Icon;
-                      return Icon ? <Icon className="size-6" /> : null;
-                    })()}
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="font-semibold">
-                      {transaction.type === "income" ? "+" : "-"}$
-                      {transaction.amount.toLocaleString("es-ES", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </p>
-                    <p className="text-sm text-default-500">
-                      {transaction.date}
-                    </p>
-                  </div>
-                </CardBody>
-              </Card>
+                transaction={transaction}
+                findIconByCategory={findIconByCategory}
+                onDelete={() => setRefreshData(!refreshData)}
+                onUpdate={() => setRefreshData(!refreshData)}
+              />
             ))
           ) : recentTransactions.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 mt-4">
