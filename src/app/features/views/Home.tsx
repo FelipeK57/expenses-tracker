@@ -4,6 +4,7 @@ import {
   TrendingDown,
   TrendingUp,
   History,
+  Settings,
 } from "lucide-react";
 import { NewIncome } from "../components/NewIncome";
 import { NewExpense } from "../components/NewExpense";
@@ -90,13 +91,25 @@ export const Home = () => {
   return (
     <main className="relative flex flex-col gap-2 p-4 h-full">
       <article className="flex flex-col gap-2">
-        <p className="text font-semibold">
-          Resumen de{" "}
-          {new Date(year, month).toLocaleString("es-ES", {
-            month: "long",
-            year: "numeric",
-          })}
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text font-semibold">
+            Resumen de{" "}
+            {new Date(year, month).toLocaleString("es-ES", {
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+          <Button
+            as={Link}
+            to="/settings"
+            variant="light"
+            size="sm"
+            isIconOnly
+            aria-label="Ajustes"
+          >
+            <Settings className="size-5" />
+          </Button>
+        </div>
         <div className="py-4">
           <p className="text-sm text-center">Balance actual</p>
           <div className="text-center first-letter:g font-bold text-4xl">

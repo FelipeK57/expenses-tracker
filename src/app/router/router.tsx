@@ -4,6 +4,7 @@ import { MainLayout } from "../components/layout/MainLayout";
 // Routes
 import { Home } from "../features/views/Home";
 import { Transactions } from "../features/views/Transactions";
+import { Settings } from "../features/views/Settings";
 
 export const RouterProvider = () => {
   return (
@@ -12,6 +13,7 @@ export const RouterProvider = () => {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="transactions" element={<Transactions />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

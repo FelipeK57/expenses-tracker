@@ -85,3 +85,7 @@ export const updateTransaction = async (
 ) => {
   return await db.transactions.update(id, { note, amount, date, category });
 };
+
+export const clearAllTransactions = async () => {
+  return await db.transactions.clear();
+};
