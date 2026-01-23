@@ -110,7 +110,7 @@ export const TransactionCard = ({
         </CardBody>
       </Card>
 
-      <Modal backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal disableAnimation={true} backdrop="blur" isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
             {transaction.type === "income" ? "Ingreso" : "Gasto"}
