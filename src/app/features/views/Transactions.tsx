@@ -45,7 +45,7 @@ export const Transactions = () => {
   >("all");
   const [tempCategoryFilter, setTempCategoryFilter] = useState<string>("all");
   const [page, setPage] = useState<number>(1);
-//   const [refreshData, setRefreshData] = useState<boolean>(false);
+  //   const [refreshData, setRefreshData] = useState<boolean>(false);
   const {
     isOpen: isFiltersOpen,
     onOpen: onOpenFiltersBase,
@@ -371,6 +371,7 @@ export const Transactions = () => {
 
         <Modal
           backdrop="blur"
+          disableAnimation={true}
           isOpen={isFiltersOpen}
           onOpenChange={onFiltersChange}
         >
