@@ -28,7 +28,7 @@ import {
 } from "@/app/schema";
 import { getTransactionsByMonth } from "../services/transactions.service";
 
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 5;
 
 export const Transactions = () => {
   const today = new Date();
