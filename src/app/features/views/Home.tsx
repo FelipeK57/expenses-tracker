@@ -1,10 +1,9 @@
 import { Button, Card, CardBody, Skeleton } from "@heroui/react";
 import {
-  ChevronLeft,
   ChevronRight,
   TrendingDown,
   TrendingUp,
-  History
+  History,
 } from "lucide-react";
 import { NewIncome } from "../components/NewIncome";
 import { NewExpense } from "../components/NewExpense";
@@ -20,6 +19,7 @@ import {
   getTotalExpensesByMonth,
   getTotalIncomesByMonth,
 } from "../services/transactions.service";
+import { Link } from "react-router";
 
 export const Home = () => {
   // Obtenemos mes y año actuales
@@ -90,27 +90,16 @@ export const Home = () => {
   return (
     <main className="relative flex flex-col gap-2 p-4 h-full">
       <article className="flex flex-col gap-2">
-        <article className="flex items-center gap-1 justify-between">
-          <p className="text font-semibold">
-            Resumen de{" "}
-            {new Date(year, month).toLocaleString("es-ES", {
-              month: "long",
-              year: "numeric",
-            })}
-          </p>
-          <article className="flex items-center justify-center gap-2">
-            <Button isIconOnly variant="light" size="lg">
-              <ChevronLeft className="size-5" />
-            </Button>
-            <Button isIconOnly variant="light" size="lg">
-              <ChevronRight className="size-5" />
-            </Button>
-          </article>
-        </article>
-
+        <p className="text font-semibold">
+          Resumen de{" "}
+          {new Date(year, month).toLocaleString("es-ES", {
+            month: "long",
+            year: "numeric",
+          })}
+        </p>
         <div className="py-4">
           <p className="text-sm text-center">Balance actual</p>
-          <div className="text-center first-letter:g font-bold text-5xl">
+          <div className="text-center first-letter:g font-bold text-4xl">
             {!loading ? (
               `$${currentBalance.toLocaleString("es-ES", {
                 minimumFractionDigits: 2,
@@ -162,6 +151,8 @@ export const Home = () => {
         <div className="flex items-center justify-between">
           <h2 className="font-medium">Últimos movimientos</h2>
           <Button
+            as={Link}
+            to="/transactions"
             variant="light"
             endContent={<ChevronRight className="size-5" />}
           >

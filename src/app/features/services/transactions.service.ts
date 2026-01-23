@@ -22,7 +22,21 @@ export const getCurrentBalance = async () => {
   }, 0);
 
   return balance;
-}
+};
+
+export const getTransactionsByMonth = async (month: number, year: number) => {
+  const allTransactions = await db.transactions.toArray();
+
+  return allTransactions
+    .filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return (
+        transactionDate.getMonth() === month &&
+        transactionDate.getFullYear() === year
+      );
+    })
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
 
 export const getTotalIncomesByMonth = async (month: number, year: number) => {
   const allTransactions = await db.transactions

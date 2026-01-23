@@ -3,6 +3,7 @@ import { MainLayout } from "../components/layout/MainLayout";
 
 // Routes
 import { Home } from "../features/views/Home";
+import { Transactions } from "../features/views/Transactions";
 
 export const RouterProvider = () => {
   return (
@@ -10,6 +11,7 @@ export const RouterProvider = () => {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
+          <Route path="transactions" element={<Transactions />} />
         </Route>
       </Routes>
     </BrowserRouter>
