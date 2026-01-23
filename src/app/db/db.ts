@@ -1,26 +1,18 @@
 import Dexie from "dexie";
-
-interface Expense {
-  id?: number;
-  reason: string;
-  amount: number;
-  date: string;
-  category: string;
-}
+import type { Transaction } from "../schema";
 
 class ExpensesTrackerDB extends Dexie {
-  expenses: Dexie.Table<Expense, number>;
+  transactions: Dexie.Table<Transaction, number>;
 
   constructor() {
-    super("expenses-tracker_db");
-    this.expenses = this.table("expenses");
+    super("finances-tracker_db");
+    this.version(2).stores({
+      transactions: "++id, type, note, amount, date, category",
+    });
+    this.transactions = this.table("transactions");
   }
 }
 
 const expensesTrackerDB = new ExpensesTrackerDB();
-
-expensesTrackerDB.version(1).stores({
-  expenses: "++id, reason, amount, date, category",
-});
 
 export default expensesTrackerDB;

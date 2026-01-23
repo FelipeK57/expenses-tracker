@@ -12,50 +12,20 @@ import {
   expenseCategories,
   incomeCategories,
 } from "@/app/schema";
+import { useEffect, useState } from "react";
+import {
+  getCurrentBalance,
+  getRecentTransactions,
+  getTotalExpensesByMonth,
+  getTotalIncomesByMonth,
+} from "../services/transactions.service";
 
 export const Home = () => {
-  const recentTransactions: Transaction[] = [
-    {
-      type: "income",
-      note: "Pago de nómina",
-      amount: 2000.0,
-      date: "2024-06-01",
-      category: "Salary",
-    },
-    {
-      type: "expense",
-      note: "Compra de comestibles",
-      amount: -150.75,
-      date: "2024-06-03",
-      category: "Food",
-    },
-    {
-      type: "expense",
-      note: "Gasolina para el coche",
-      amount: -40.0,
-      date: "2024-06-05",
-      category: "Gasoline",
-    },
-    {
-      type: "expense",
-      note: "Cena en restaurante",
-      amount: -60.0,
-      date: "2024-06-07",
-      category: "Food",
-    },
-    {
-      type: "expense",
-      note: "Transporte público",
-      amount: -20.0,
-      date: "2024-06-08",
-      category: "Transport",
-    },
-  ];
-
   // Obtenemos mes y año actuales
   const month = new Date().getMonth();
   const year = new Date().getFullYear();
 
+  // Función para obtener el ícono de una categoría
   const findIconByCategory = (
     type: "income" | "expense",
     categoryKey: string,
@@ -64,6 +34,44 @@ export const Home = () => {
     const category = categories.find((cat) => cat.key === categoryKey);
     return category ? category.icon : null;
   };
+
+  // Datos del dashboard
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
+    [],
+  );
+  const [currentBalance, setCurrentBalance] = useState<number>(0);
+  const [totalIncomes, setTotalIncomes] = useState<number>(0);
+  const [totalExpenses, setTotalExpenses] = useState<number>(0);
+
+  // Refrescar datos
+  const [refreshData, setRefreshData] = useState<boolean>(false);
+
+  // Cargar datos al montar el componente
+  useEffect(() => {
+    const fetchData = async () => {
+      const recentTransactionsData = await getRecentTransactions(5);
+      setRecentTransactions(recentTransactionsData);
+
+      const currentBalanceData = await getCurrentBalance();
+      setCurrentBalance(currentBalanceData);
+
+      const incomesData = await getTotalIncomesByMonth(month, year);
+      const totalIncomesAmount = incomesData.reduce(
+        (acc, transaction) => acc + transaction.amount,
+        0,
+      );
+      setTotalIncomes(totalIncomesAmount);
+
+      const expensesData = await getTotalExpensesByMonth(month, year);
+      const totalExpensesAmount = expensesData.reduce(
+        (acc, transaction) => acc + transaction.amount,
+        0,
+      );
+      setTotalExpenses(totalExpensesAmount);
+    };
+
+    fetchData();
+  }, [refreshData]);
 
   return (
     <main className="relative flex flex-col gap-2 p-4 h-full">
@@ -89,7 +97,10 @@ export const Home = () => {
         <div className="py-4">
           <p className="text-sm text-center">Balance actual</p>
           <p className="text-center first-letter:g font-bold text-5xl">
-            $51,889.00
+            $
+            {currentBalance.toLocaleString("es-ES", {
+              minimumFractionDigits: 2,
+            })}
           </p>
         </div>
 
@@ -100,7 +111,12 @@ export const Home = () => {
                 <TrendingUp className="size-5 text-success" />
               </div>
               <p className="mt-4 font-semibold text-default-500">Ingresos</p>
-              <p className="font-semibold text-xl mt-2">$102,012</p>
+              <p className="font-semibold text-xl mt-2">
+                $
+                {totalIncomes.toLocaleString("es-ES", {
+                  minimumFractionDigits: 2,
+                })}
+              </p>
             </CardBody>
           </Card>
           <Card className="w-full">
@@ -109,7 +125,12 @@ export const Home = () => {
                 <TrendingDown className="size-5 text-danger" />
               </div>
               <p className="mt-4 font-semibold text-default-500">Gastos</p>
-              <p className="font-semibold text-xl mt-2">$50,123</p>
+              <p className="font-semibold text-xl mt-2">
+                $
+                {totalExpenses.toLocaleString("es-ES", {
+                  minimumFractionDigits: 2,
+                })}
+              </p>
             </CardBody>
           </Card>
         </article>
@@ -145,10 +166,12 @@ export const Home = () => {
                 </div>
                 <div className="flex flex-col">
                   <p className="font-semibold">
-                    ${transaction.amount.toFixed(2)}
+                    {transaction.type === "income" ? "+" : "-"}$
+                    {transaction.amount.toLocaleString("es-ES", {
+                      minimumFractionDigits: 2,
+                    })}
                   </p>
                   <p className="text-sm text-default-500">{transaction.date}</p>
-                  {/* <p className="font-semibold">{transaction.note}</p> */}
                 </div>
               </CardBody>
             </Card>
@@ -156,8 +179,8 @@ export const Home = () => {
         </div>
       </article>
       <div className="absolute bottom-4 right-4 flex flex-col gap-4">
-        <NewIncome />
-        <NewExpense />
+        <NewIncome refreshData={refreshData} setRefreshData={setRefreshData} />
+        <NewExpense refreshData={refreshData} setRefreshData={setRefreshData} />
       </div>
     </main>
   );

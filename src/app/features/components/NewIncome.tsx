@@ -15,8 +15,14 @@ import {
 import { Plus } from "lucide-react";
 // import { parseDate } from "@internationalized/date";
 import { useEffect, useRef, useState } from "react";
+import { newTransaction } from "../services/transactions.service";
 
-export const NewIncome = () => {
+interface NewIncomeProps {
+  refreshData: boolean;
+  setRefreshData: (value: boolean) => void;
+}
+
+export const NewIncome = ({ refreshData, setRefreshData }: NewIncomeProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   //   const today = new Date();
   const [selectedCategory, setSelectedCategory] = useState("food");
@@ -30,7 +36,7 @@ export const NewIncome = () => {
 
   const categories = incomeCategories;
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = Object.fromEntries(new FormData(event.currentTarget));
 
@@ -41,7 +47,15 @@ export const NewIncome = () => {
       notes: "", // Placeholder for notes
     };
 
-    console.log("New movement data:", dataFormatted);
+    await newTransaction(
+      "income",
+      dataFormatted.amount,
+      dataFormatted.date,
+      dataFormatted.category,
+      dataFormatted.notes,
+    );
+    setRefreshData(!refreshData);
+    onOpenChange();
   };
 
   return (
