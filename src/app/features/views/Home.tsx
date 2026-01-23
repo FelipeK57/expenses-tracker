@@ -1,4 +1,4 @@
-import { Button, Card, CardBody } from "@heroui/react";
+import { Button, Card, CardBody, Skeleton } from "@heroui/react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -97,39 +97,48 @@ export const Home = () => {
         <div className="py-4">
           <p className="text-sm text-center">Balance actual</p>
           <p className="text-center first-letter:g font-bold text-5xl">
-            $
-            {currentBalance.toLocaleString("es-ES", {
-              minimumFractionDigits: 2,
-            })}
+            {currentBalance ? (
+              `$${currentBalance.toLocaleString("es-ES", {
+                minimumFractionDigits: 2,
+              })}`
+            ) : (
+              <Skeleton className="w-32 h-10 mx-auto rounded-xl" />
+            )}
           </p>
         </div>
 
-        <article className="grid grid-cols-2 gap-4">
-          <Card className="w-full">
+        <article className="grid grid-cols-2 gap-2">
+          <Card className="w-full shadow-none border-1 border-divider dark:border-content2">
             <CardBody>
               <div className="grid place-content-center size-10 bg-success-400/20 rounded-xl">
                 <TrendingUp className="size-5 text-success" />
               </div>
-              <p className="mt-4 font-semibold text-default-500">Ingresos</p>
+              <p className="mt-2 font-semibold text-default-500">Ingresos</p>
               <p className="font-semibold text-xl mt-2">
-                $
-                {totalIncomes.toLocaleString("es-ES", {
-                  minimumFractionDigits: 2,
-                })}
+                {totalIncomes ? (
+                  `$${totalIncomes.toLocaleString("es-ES", {
+                    minimumFractionDigits: 2,
+                  })}`
+                ) : (
+                  <Skeleton className="w-24 h-6 rounded-xl" />
+                )}
               </p>
             </CardBody>
           </Card>
-          <Card className="w-full">
+          <Card className="w-full shadow-none border-1 border-divider dark:border-content2">
             <CardBody>
               <div className="grid place-content-center size-10 bg-danger-400/20 rounded-xl">
                 <TrendingDown className="size-5 text-danger" />
               </div>
-              <p className="mt-4 font-semibold text-default-500">Gastos</p>
+              <p className="mt-2 font-semibold text-default-500">Gastos</p>
               <p className="font-semibold text-xl mt-2">
-                $
-                {totalExpenses.toLocaleString("es-ES", {
-                  minimumFractionDigits: 2,
-                })}
+                {totalExpenses ? (
+                  `$${totalExpenses.toLocaleString("es-ES", {
+                    minimumFractionDigits: 2,
+                  })}`
+                ) : (
+                  <Skeleton className="w-24 h-6 rounded-xl" />
+                )}
               </p>
             </CardBody>
           </Card>
@@ -146,36 +155,60 @@ export const Home = () => {
           </Button>
         </div>
         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
-          {recentTransactions.map((transaction, index) => (
-            <Card key={index}>
-              <CardBody className="flex flex-row gap-4 items-center">
-                <div
-                  className={`grid place-content-center size-12 ${
-                    transaction.type === "income"
-                      ? "bg-success-400/20 text-success"
-                      : "bg-danger-400/20 text-danger"
-                  } rounded-xl`}
+          {recentTransactions.length > 0 ? (
+            recentTransactions.map((transaction, index) => (
+              <Card
+                key={index}
+                className="shadow-none border-1 border-divider dark:border-content2"
+              >
+                <CardBody className="flex flex-row gap-4 items-center">
+                  <div
+                    className={`grid place-content-center size-12 ${
+                      transaction.type === "income"
+                        ? "bg-success-400/20 text-success"
+                        : "bg-danger-400/20 text-danger"
+                    } rounded-xl`}
+                  >
+                    {(() => {
+                      const Icon: any = findIconByCategory(
+                        transaction.type,
+                        transaction.category,
+                      ) as typeof Icon;
+                      return Icon ? <Icon className="size-6" /> : null;
+                    })()}
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-semibold">
+                      {transaction.type === "income" ? "+" : "-"}$
+                      {transaction.amount.toLocaleString("es-ES", {
+                        minimumFractionDigits: 2,
+                      })}
+                    </p>
+                    <p className="text-sm text-default-500">
+                      {transaction.date}
+                    </p>
+                  </div>
+                </CardBody>
+              </Card>
+            ))
+          ) : (
+            <>
+              {[...Array(3)].map((_, index) => (
+                <Card
+                  key={index}
+                  className="shadow-none border-1 border-divider dark:border-content2"
                 >
-                  {(() => {
-                    const Icon: any = findIconByCategory(
-                      transaction.type,
-                      transaction.category,
-                    ) as typeof Icon;
-                    return Icon ? <Icon className="size-6" /> : null;
-                  })()}
-                </div>
-                <div className="flex flex-col">
-                  <p className="font-semibold">
-                    {transaction.type === "income" ? "+" : "-"}$
-                    {transaction.amount.toLocaleString("es-ES", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </p>
-                  <p className="text-sm text-default-500">{transaction.date}</p>
-                </div>
-              </CardBody>
-            </Card>
-          ))}
+                  <CardBody className="flex flex-row gap-4 items-center">
+                    <Skeleton className="size-12 rounded-xl shrink-0" />
+                    <div className="flex flex-col gap-2 flex-1">
+                      <Skeleton className="w-24 h-6 rounded-lg" />
+                      <Skeleton className="w-32 h-4 rounded-lg" />
+                    </div>
+                  </CardBody>
+                </Card>
+              ))}
+            </>
+          )}
         </div>
       </article>
       <div className="absolute bottom-4 right-4 flex flex-col gap-4">
